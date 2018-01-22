@@ -1,0 +1,31 @@
+image: centos:latest
+
+variables:
+  NODE_ENV: "test"
+
+before_script:
+  - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+  - yum install docker-ce -y
+  - service docker start
+  - docker ps -a
+  - df -h
+  - pwd
+
+.docker_build: &docker_build
+  stage: build
+  script:
+    - cd lambda
+    - ./build.sh
+  artifacts:
+    expire_in: 24h
+    when: always
+    paths:
+      - final/
+
+stages:
+  - build
+
+
+build-sandbox:
+  <<: *docker_build
+
