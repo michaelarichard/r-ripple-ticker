@@ -3,6 +3,12 @@ image: centos:latest
 variables:
   NODE_ENV: "test"
 
+stages:
+  - lambda_build
+  - terraform_plan
+  - terraform_apply
+  - terraform_destroy
+
 before_script:
 # Docker on centos:7
 #  - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
@@ -11,26 +17,38 @@ before_script:
 #  - df -h
 #  - pwd
 
-# Python 3.4 on centos7
-   - yum -y install epel-release
-   - yum -y install python34
-   - yum -y install python34-setuptools
+# Install Terraform
+   - curl https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip -o terraform.zip;
+   - unzip terraform.zip
+   - ls -lisa
+   - chmod +x terraform; mv terraform /usr/local/bin/.
+
+# Install Python 3.4 on centos7
+   - yum -y install epel-release zip
+   - yum -y install python34 python34-setuptools
    - easy_install-3.4 pip
 
-.docker_build: &docker_build
+.lambda_build: &lambda_build
   stage: build
   script:
     - cd lambda
     - ./build.sh
+
+.terraform_plan: &terraform_plan
+  stage: terraform_plan
+  script:
+    - cd terraform
+    - terraform init
+    - terraform plan
+
 #  artifacts:
 #    expire_in: 24h
 #    when: always
 #    paths:
 #      - final/
 
-stages:
-  - build
+lambda_build:
+  <<: *lambda_build
 
-build-sandbox:
-  <<: *docker_build
-
+terraform_plan:
+  <<: *terraform_plan
