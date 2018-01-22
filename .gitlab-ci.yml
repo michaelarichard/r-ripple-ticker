@@ -4,11 +4,12 @@ variables:
   NODE_ENV: "test"
 
 before_script:
-  - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-  - yum install docker-ce -y
-  - docker ps -a
-  - df -h
-  - pwd
+#  - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
+#  - yum install docker-ce -y
+#  - docker ps -a
+#  - df -h
+#  - pwd
+   - yum install python3 pip3 -y
 
 .docker_build: &docker_build
   stage: build
