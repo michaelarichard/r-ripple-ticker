@@ -6,7 +6,6 @@ variables:
 before_script:
   - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
   - yum install docker-ce -y
-  - service docker start
   - docker ps -a
   - df -h
   - pwd
@@ -16,11 +15,11 @@ before_script:
   script:
     - cd lambda
     - ./build.sh
-  artifacts:
-    expire_in: 24h
-    when: always
-    paths:
-      - final/
+#  artifacts:
+#    expire_in: 24h
+#    when: always
+#    paths:
+#      - final/
 
 stages:
   - build
