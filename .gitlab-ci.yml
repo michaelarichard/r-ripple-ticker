@@ -29,7 +29,7 @@ before_script:
    - easy_install-3.4 pip
 
 .lambda_build: &lambda_build
-  stage: build
+  stage: lambda_build
   script:
     - cd lambda
     - ./build.sh
