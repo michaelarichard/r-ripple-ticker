@@ -19,10 +19,12 @@ before_script:
 
 # Install Terraform
    - yum -y install unzip
+   - mkdir temp ; cd temp
    - curl https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip -o terraform.zip;
    - unzip -f terraform.zip
    - ls -lisa
    - chmod +x terraform; mv terraform /usr/local/bin/.
+   - cd ..
 
 # Install Python 3.4 on centos7
    - yum -y install epel-release zip
