@@ -29,6 +29,12 @@ before_script:
    - yum -y install python34 python34-setuptools
    - easy_install-3.4 pip
 
+# Add secret vars
+   - echo ${REDDIT_CLIENT_ID} >> terraform/terraform.tfvars
+   - echo ${REDDIT_CLIENT_SECRET} >> terraform/terraform.tfvars
+   - echo ${REDDIT_CLIENT_USERNAME} >> terraform/terraform.tfvars
+   - echo ${REDDIT_CLIENT_PASSWORD} >> terraform/terraform.tfvars
+
 .lambda_build: &lambda_build
   stage: lambda_build
   script:

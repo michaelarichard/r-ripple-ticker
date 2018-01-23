@@ -22,11 +22,11 @@ def lambda_handler(event, context):
     locale.setlocale(locale.LC_ALL, 'en_US')
 
     reddit = praw.Reddit(
-        client_id = os.environ.get('DATABASE_NAME'),
-        client_secret = os.environ.get('PRAW_CLIENT_SECRET'),
-        password = os.environ.get('PRAW_CLIENT_PASSWORD'),
+        client_id = os.environ.get('REDDIT_CLIENT_ID'),
+        client_secret = os.environ.get('REDDIT_CLIENT_SECRET'),
+        password = os.environ.get('REDDIT_CLIENT_PASSWORD'),
         user_agent = 'rripple-bot-1.0',
-        username = 'rripple_bot')
+        username = os.environ.get('REDDIT_CLIENT_USERNAME'),
 
     try: 
         # Get subreddit
