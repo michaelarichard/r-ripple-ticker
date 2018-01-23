@@ -30,6 +30,8 @@ before_script:
    - easy_install-3.4 pip
 
 # Add secret vars
+   - find .
+   - ls -lisa
    - echo ${REDDIT_CLIENT_ID} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_SECRET} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_USERNAME} >> ./terraform/terraform.tfvars
