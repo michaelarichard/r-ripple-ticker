@@ -1,9 +1,9 @@
 terraform {
   backend "s3" {
-    bucket = "my_bucket"
+    bucket = "stormpath-terraform-state"
     region = "us-west-2"
     key = "rripple/ticker/us-west-2/prod/terraform.tfstate"
-    profile = "personal_aws"
+#    profile = "personal_aws"
 #    role_arn = "arn:aws:iam::00000000000:role/path/blah/blah/blah""
   }
 }
