@@ -38,8 +38,8 @@ before_script:
    - mkdir -p ~/.aws
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
    - echo -e "[default]\nregion = us-west-2" > ~/.aws/config
-   - cat ~/.aws/credentials
-   - aws s3 ls
+#   - cat ~/.aws/credentials
+#   - aws s3 ls
    - echo ${REDDIT_CLIENT_ID} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_SECRET} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_USERNAME} >> ./terraform/terraform.tfvars
