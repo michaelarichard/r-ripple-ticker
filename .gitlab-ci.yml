@@ -36,6 +36,8 @@ before_script:
 # Add secret vars
    - find .
    - ls -lisa
+   - mkdir -p ~/.aws
+   - echo "[default]\naws_access_key_id = $AWS_ID\naws_secret_access_key = $AWS_KEY" > ~/.aws/credentials"
    - echo ${REDDIT_CLIENT_ID} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_SECRET} >> ./terraform/terraform.tfvars
    - echo ${REDDIT_CLIENT_USERNAME} >> ./terraform/terraform.tfvars
