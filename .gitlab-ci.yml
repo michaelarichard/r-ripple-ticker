@@ -31,13 +31,13 @@ before_script:
    - yum -y install python34 python34-setuptools
    - easy_install-3.4 pip
    - pip3 install awscli
-   - mkdir .aws ; echo "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" >> .aws/credentials
 
 # Add secret vars
    - find .
    - ls -lisa
    - mkdir -p ~/.aws
-   - echo "[default]\naws_access_key_id = $AWS_ID\naws_secret_access_key = $AWS_KEY" > ~/.aws/credentials
+   - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
+   - echo -e "[default]\nregion = us-west-2" > ~/.aws/config
    - cat ~/.aws/credentials
    - aws s3 ls
    - echo ${REDDIT_CLIENT_ID} >> ./terraform/terraform.tfvars
