@@ -55,8 +55,9 @@ before_script:
   stage: terraform_plan
   script:
     - cd terraform
-    - terraform init
-    - terraform plan
+    - cat terraform.tfvars
+#    - terraform init
+#    - terraform plan
 
 #  artifacts:
 #    expire_in: 24h
