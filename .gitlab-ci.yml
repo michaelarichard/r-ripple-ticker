@@ -37,13 +37,12 @@ before_script:
    - ls -lisa
    - mkdir -p ~/.aws
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
-   - echo -e "[default]\nregion = us-west-2" > ~/.aws/config
 #   - cat ~/.aws/credentials
 #   - aws s3 ls
-   - echo ${REDDIT_CLIENT_ID} >> ./terraform/terraform.tfvars
-   - echo ${REDDIT_CLIENT_SECRET} >> ./terraform/terraform.tfvars
-   - echo ${REDDIT_CLIENT_USERNAME} >> ./terraform/terraform.tfvars
-   - echo ${REDDIT_CLIENT_PASSWORD} >> ./terraform/terraform.tfvars
+   - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
+   - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
+   - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
+   - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
 
 .lambda_build: &lambda_build
   stage: lambda_build
@@ -56,8 +55,8 @@ before_script:
   script:
     - cd terraform
     - cat terraform.tfvars
-#    - terraform init
-#    - terraform plan
+    - terraform init
+    - terraform plan
 
 #  artifacts:
 #    expire_in: 24h
