@@ -34,9 +34,7 @@ before_script:
 #   - pip3 install awscli
 
 # Add secret vars
-   - find .
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
-   - aws s3 ls
    - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
