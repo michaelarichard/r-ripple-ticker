@@ -47,7 +47,10 @@ before_script:
   script:
     - cd lambda
     - ./build.sh
-    - cat /etc/hosts
+    - cd ../terraform
+    - terraform init
+    - terraform plan
+
 #  artifacts:
 #    expire_in: 24h
 #    when: always
@@ -66,5 +69,5 @@ before_script:
 lambda_build:
   <<: *lambda_build
 
-terraform_plan:
-  <<: *terraform_plan
+#terraform_plan:
+#  <<: *terraform_plan
