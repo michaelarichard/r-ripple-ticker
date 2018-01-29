@@ -1,4 +1,5 @@
-image: centos:latest
+#image: centos:latest
+image: michaelrichard/builder:test
 
 variables:
   NODE_ENV: "test"
@@ -18,27 +19,24 @@ before_script:
 #  - pwd
 
 # Install Terraform
-   - yum -y install unzip
-   - mkdir temp ; cd temp
-   - curl https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip -o terraform.zip
-   - unzip terraform.zip
-   - ls -lisa
-   - mv terraform /usr/local/bin/.
-   - cd ..
+#   - yum -y install unzip
+#   - mkdir temp ; cd temp
+#   - curl https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip -o terraform.zip
+#   - unzip terraform.zip
+#   - ls -lisa
+#   - mv terraform /usr/local/bin/.
+#   - cd ..
 
 # Install Python 3.4 on centos7
-   - yum -y install epel-release zip
-   - yum -y install python34 python34-setuptools
-   - easy_install-3.4 pip
-   - pip3 install awscli
+#   - yum -y install epel-release zip
+#   - yum -y install python34 python34-setuptools
+#   - easy_install-3.4 pip
+#   - pip3 install awscli
 
 # Add secret vars
    - find .
-   - ls -lisa
-   - mkdir -p ~/.aws
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
-#   - cat ~/.aws/credentials
-#   - aws s3 ls
+   - aws s3 ls
    - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
@@ -54,8 +52,6 @@ before_script:
   stage: terraform_plan
   script:
     - cd terraform
-    - ls -lisa
-    - ls -lisa ../lambda/
     - terraform init
     - terraform plan
 
