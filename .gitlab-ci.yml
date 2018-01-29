@@ -54,7 +54,8 @@ before_script:
   stage: terraform_plan
   script:
     - cd terraform
-    - cat terraform.tfvars
+    - ls -lisa
+    - ls -lisa ../lambda/
     - terraform init
     - terraform plan
 
