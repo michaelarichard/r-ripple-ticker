@@ -48,11 +48,11 @@ before_script:
     - cd lambda
     - ./build.sh
     - cat /etc/hosts
-  artifacts:
-    expire_in: 24h
-    when: always
-    paths:
-      - lambda/lambda.py.zip
+#  artifacts:
+#    expire_in: 24h
+#    when: always
+#    paths:
+#      - lambda/lambda.py.zip
 
 
 
