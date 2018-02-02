@@ -49,7 +49,6 @@ before_script:
     - terraform init
     - terraform plan -out tfplan
     - ping gitlab.stormpath.net
-
   artifacts:
     expire_in: 24h
     when: always
