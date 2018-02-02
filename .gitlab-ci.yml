@@ -47,7 +47,7 @@ before_script:
     - ./build.sh
     - cd ../terraform
     - terraform init
-    - terraform plan -outfile tfplan
+    - terraform plan -out tfplan
 
   artifacts:
     expire_in: 24h
