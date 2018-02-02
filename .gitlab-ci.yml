@@ -41,7 +41,7 @@ before_script:
    - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
 
 .lambda_build: &lambda_build
-  stage: lambda build
+  stage: lambda_build
   script:
     - cd lambda
     - ./build.sh
