@@ -48,6 +48,7 @@ before_script:
     - cd ../terraform
     - terraform init
     - terraform plan -out tfplan
+    - echo 'Hello world'
   artifacts:
     expire_in: 24h
     when: always
