@@ -53,7 +53,7 @@ before_script:
     when: always
     paths:
       - lambda/lambda.py.zip
-      - tfplan
+      - terraform/tfplan
 
 
 
