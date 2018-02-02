@@ -47,13 +47,14 @@ before_script:
     - ./build.sh
     - cd ../terraform
     - terraform init
-    - terraform plan
+    - terraform plan -outfile tfplan
 
-#  artifacts:
-#    expire_in: 24h
-#    when: always
-#    paths:
-#      - lambda/lambda.py.zip
+  artifacts:
+    expire_in: 24h
+    when: always
+    paths:
+      - lambda/lambda.py.zip
+      - tfplan
 
 
 
@@ -62,7 +63,8 @@ before_script:
   script:
     - cd terraform
     - terraform init
-    - terraform plan
+    - terraform plan -out tfplan
+
 
 lambda_build:
   <<: *lambda_build
