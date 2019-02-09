@@ -18,7 +18,11 @@ before_script:
   script:
    - cd lambda
    - ./build.sh
-   - cd ..
+  artifacts:
+    expire_in: 24h
+    when: always
+    paths:
+      - lambda/lambda.py.zip
 
 .terraform_plan: &terraform_plan
   stage: terraform_plan
@@ -46,22 +50,37 @@ before_script:
     - terraform init
     - terraform apply -auto-approve tfplan
 
-rippletest_build:
+common_build:
   variables:
-    REDDIT_SUBREDDIT: "rippletest"
   <<: *build
 
 rippletest_terraform_plan:
   dependencies:
-    - rippletest_build
+    - common_build
   variables:
     REDDIT_SUBREDDIT: "rippletest"
+    SCHEDULE_TIME: "1 minute"
   <<: *terraform_plan
 
 rippletest_terraform_apply:
   dependencies:
-    - rippletest_build
+    - common_build
     - rippletest_terraform_plan
+  <<: *terraform_apply
+
+ripple_terraform_plan:
+  dependencies:
+    - common_build
   variables:
-    REDDIT_SUBREDDIT: "rippletest"
+    REDDIT_SUBREDDIT: "ripple"
+    SCHEDULE_TIME: "10 minutes"
+  <<: *terraform_plan
+
+ripple_terraform_apply:
+  when: manual
+  only:
+    - master
+  dependencies:
+    - common_build
+    - ripple_terraform_plan
   <<: *terraform_apply
