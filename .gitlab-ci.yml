@@ -19,6 +19,7 @@ before_script:
    - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
    - cd lambda
    - ./build.sh
+   - cd ..
 
 .terraform_plan: &terraform_plan
   stage: terraform_test_plan
