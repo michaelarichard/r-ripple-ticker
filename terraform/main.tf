@@ -20,7 +20,7 @@ resource "aws_lambda_function" "ticker_lambda" {
 resource "aws_cloudwatch_event_rule" "ticker_x_min" {
    name = "ticker_x_min"
    depends_on = ["aws_lambda_function.ticker_lambda"]
-   schedule_expression = "rate(10 minute)"
+   schedule_expression = "rate(1 minute)"
 }
 
 resource "aws_cloudwatch_event_target" "ticker_x_min" {
