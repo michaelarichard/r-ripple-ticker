@@ -16,7 +16,9 @@ def lambda_handler(event, context):
     ticker_url = 'https://api.coinmarketcap.com/v1/ticker/'
     ticker_url_eur = 'https://api.coinmarketcap.com/v1/ticker/?convert=EUR'
 
-    subreddit_name = 'ripple'
+    subreddit_name = os.environ.get('REDDIT_SUBREDDIT')
+    dryrun = False
+    widget_shortName = 'Ripple Subreddit'
     up_symbol = '&#8679;'
     dn_symbol = '&#8681;'
     locale.setlocale(locale.LC_ALL, 'en_US')
@@ -32,7 +34,7 @@ def lambda_handler(event, context):
         # Get subreddit
         subreddit = reddit.subreddit(subreddit_name)
 
-        # Get sidebar (description) from subreddit
+        # Get legacy sidebar (description) from subreddit
         sidebar = subreddit.mod.settings()['description']
         # Get ticker data
         usd_ticker_data = requests.get(ticker_url).json()
@@ -61,7 +63,7 @@ def lambda_handler(event, context):
         xrp_usd_change_icon = up_symbol if float(xrp_usd_change_pct) > 0 else dn_symbol
 
         # BTC USD
-        btc_usd_price = coins_usd['BTC']['price_usd']
+        btc_usd_price = "{0:.2f}".format(float(coins_usd['BTC']['price_usd']))
         btc_usd_change_pct = coins_usd['BTC']['percent_change_24h']
         btc_usd_change_icon = up_symbol if float(btc_usd_change_pct) > 0 else dn_symbol
 
@@ -97,20 +99,44 @@ def lambda_handler(event, context):
         # $|0.338 |12.67%
         # €|0.292269|13.01%
         # Updated|05-23-2017 20:59:37|UTC
+        # BTC|$ 3654.91|&#8679; 7.54%
         
         sidebar = re.sub('Ƀ\|.*', 'Ƀ|{}|{} {}%'.format(xrp_btc_price, xrp_btc_change_icon, xrp_btc_change_pct), sidebar)
         sidebar = re.sub('\$\|.*', '$|{}|{} {}%'.format(xrp_usd_price, xrp_usd_change_icon, xrp_usd_change_pct), sidebar)
         sidebar = re.sub('€\|.*', '€|{}|{} {}%'.format(xrp_eur_price, xrp_eur_change_icon, xrp_eur_change_pct), sidebar)
         sidebar = re.sub('Updated\|.*', 'Updated|{}|UTC'.format(updatetime), sidebar)
-
         # BTC_USD Price for baseline
         sidebar = re.sub('BTC\|.*', 'BTC|$ {}|{} {}%'.format(btc_usd_price, btc_usd_change_icon, btc_usd_change_pct), sidebar)
-        
-        print(sidebar)
-        quit(1)
-        # Actually update the sidebar
-        subreddit.mod.update(description=sidebar)
-            
+        if dryrun:
+            print("\n######\n\n\nLEGACY_UPDATED:\n\n\n######\n\n{}".format(sidebar))
+        else:
+            # Actually update the legacy sidebar
+            subreddit.mod.update(description=sidebar)
+
+        # New Widget style
+        text_area = None
+        for widget in subreddit.widgets.sidebar:
+            if isinstance(widget, praw.models.TextArea) and (widget.shortName == widget_shortName):
+                text_area = widget
+                break
+        if dryrun:
+            print("\n######\n\n\nWIDGET_OLD: '{}'\n\n\n######\n\n{}".format(text_area.shortName,text_area.text))
+
+        new_sidebar = text_area.text
+
+        # Widget style only has table format so far. Same as above.
+        new_sidebar = re.sub('Ƀ\|.*', 'Ƀ|{}|{} {}%'.format(xrp_btc_price, xrp_btc_change_icon, xrp_btc_change_pct), new_sidebar)
+        new_sidebar = re.sub('\$\|.*', '$|{}|{} {}%'.format(xrp_usd_price, xrp_usd_change_icon, xrp_usd_change_pct), new_sidebar)
+        new_sidebar = re.sub('€\|.*', '€|{}|{} {}%'.format(xrp_eur_price, xrp_eur_change_icon, xrp_eur_change_pct), new_sidebar)
+        new_sidebar = re.sub('Updated\|.*', 'Updated|{}|UTC'.format(updatetime), new_sidebar)
+        new_sidebar = re.sub('BTC\|.*', 'BTC|$ {}|{} {}%'.format(btc_usd_price, btc_usd_change_icon, btc_usd_change_pct), new_sidebar)
+
+        if dryrun:
+            print("\n######\n\n\nWIDGET_UPDATED: '{}'\n\n\n######\n\n{}".format(text_area.shortName,new_sidebar))
+        else:
+            # Actually Update the ticker text area named widget_shortName
+            text_area = text_area.mod.update(shortName=widget_shortName, text=new_sidebar)
+
     except:
         raise
 

@@ -35,10 +35,11 @@ resource "aws_lambda_function" "ticker_lambda" {
   runtime          = "python3.6"
   environment {
     variables = {
-      REDDIT_CLIENT_ID = "${var.REDDIT_CLIENT_ID}"
-      REDDIT_CLIENT_SECRET = "${var.REDDIT_CLIENT_SECRET}"
+      REDDIT_CLIENT_ID       = "${var.REDDIT_CLIENT_ID}"
+      REDDIT_CLIENT_SECRET   = "${var.REDDIT_CLIENT_SECRET}"
       REDDIT_CLIENT_USERNAME = "${var.REDDIT_CLIENT_USERNAME}"
       REDDIT_CLIENT_PASSWORD = "${var.REDDIT_CLIENT_PASSWORD}"
+      REDDIT_SUBREDDIT       = "${var.REDDIT_SUBREDDIT}"
     }
   }
 }

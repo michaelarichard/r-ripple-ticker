@@ -3,52 +3,30 @@ image: michaelrichard/builder:v0.2
 
 variables:
   NODE_ENV: "test"
+  REDDIT_SUBREDDIT: "rippletest"
 
 stages:
-  - lambda_build
-  - terraform_plan
+  - terraform_test_plan
   - terraform_apply
   - terraform_destroy
 
 before_script:
-# Docker on centos:7
-#  - yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
-#  - yum install docker-ce -y
-#  - docker ps -a
-#  - df -h
-#  - pwd
-
-# Install Terraform
-#   - yum -y install unzip
-#   - mkdir temp ; cd temp
-#   - curl https://releases.hashicorp.com/terraform/0.11.2/terraform_0.11.2_linux_amd64.zip -o terraform.zip
-#   - unzip terraform.zip
-#   - ls -lisa
-#   - mv terraform /usr/local/bin/.
-#   - cd ..
-
-# Install Python 3.4 on centos7
-#   - yum -y install epel-release zip
-#   - yum -y install python34 python34-setuptools
-#   - easy_install-3.4 pip
-#   - pip3 install awscli
-
 # Add secret vars
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
    - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
+   - cd lambda
+   - ./build.sh
 
-.lambda_build: &lambda_build
-  stage: lambda_build
+.terraform_plan: &terraform_plan
+  stage: terraform_plan
   script:
-    - cd lambda
-    - ./build.sh
-    - cd ../terraform
+    - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> ./terraform/terraform.tfvars
+    - cd terraform
     - terraform init
     - terraform plan -out tfplan
-    - echo 'Hello world'
   artifacts:
     expire_in: 24h
     when: always
@@ -56,18 +34,7 @@ before_script:
       - lambda/lambda.py.zip
       - terraform/tfplan
 
-
-
-.terraform_plan: &terraform_plan
-  stage: terraform_plan
-  script:
-    - cd terraform
-    - terraform init
-    - terraform plan -out tfplan
-
-
-lambda_build:
-  <<: *lambda_build
-
-#terraform_plan:
-#  <<: *terraform_plan
+terraform_test_plan:
+  variables:
+    REDDIT_SUBREDDIT: 'rippletest'
+  <<: *terraform_plan
