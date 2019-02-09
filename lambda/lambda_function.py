@@ -28,7 +28,8 @@ def lambda_handler(event, context):
         client_secret = os.environ.get('REDDIT_CLIENT_SECRET'),
         password = os.environ.get('REDDIT_CLIENT_PASSWORD'),
         user_agent = 'rripple-bot-1.0',
-        username = os.environ.get('REDDIT_CLIENT_USERNAME'),
+        username = os.environ.get('REDDIT_CLIENT_USERNAME')
+    )
 
     try: 
         # Get subreddit
