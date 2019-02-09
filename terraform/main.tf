@@ -48,3 +48,10 @@ resource "aws_cloudwatch_event_target" "ticker1min" {
     arn = "${aws_lambda_function.ticker_lambda.arn}"
 }
 
+resource "aws_lambda_permission" "ticker1min" {
+  statement_id = "AllowExecutionFromCloudWatch"
+  action = "lambda:InvokeFunction"
+  function_name = "${aws_lambda_function.ticker_lambda.function_name}"
+  principal = "events.amazonaws.com"
+  source_arn = "${aws_cloudwatch_event_rule.ticker1min.arn}"
+}
