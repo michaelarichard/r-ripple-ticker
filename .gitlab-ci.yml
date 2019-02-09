@@ -23,8 +23,9 @@ before_script:
 .terraform_plan: &terraform_plan
   stage: terraform_test_plan
   script:
-    - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> ./terraform/terraform.tfvars
+    - pwd && ls -lisah
     - cd terraform
+    - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - terraform init
     - terraform plan -out tfplan
   artifacts:
