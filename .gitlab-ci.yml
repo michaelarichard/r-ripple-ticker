@@ -6,12 +6,14 @@ variables:
   GIT_SSL_NO_VERIFY: "true"
 
 stages:
-  - terraform_test_plan
+  - build
+  - terraform_plan
   - terraform_apply
   - terraform_destroy
 
-before_script:
-# Add secret vars
+.build: &build
+  stage: build
+  script:
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
    - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
    - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
@@ -22,23 +24,43 @@ before_script:
    - cd ..
 
 .terraform_plan: &terraform_plan
-  stage: terraform_test_plan
+  stage: terraform_plan
   script:
-    - pwd && ls -lisah
     - cd terraform
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - terraform init
     - terraform plan -out tfplan
-    - terraform apply -auto-approve tfplan
-
   artifacts:
     expire_in: 24h
     when: always
     paths:
       - lambda/lambda.py.zip
       - terraform/tfplan
+      - terraform/terraform.tfvars
 
-terraform_test_plan:
+.terraform_apply: &terraform_apply
+  stage: terraform_apply
+  script:
+    - cd terraform
+    - terraform init
+    - terraform apply -auto-approve tfplan
+
+rippletest_build:
+  variables:
+    REDDIT_SUBREDDIT: "rippletest"
+  <<: *build
+
+rippletest_terraform_plan:
+  dependencies:
+    - rippletest_build
   variables:
     REDDIT_SUBREDDIT: "rippletest"
   <<: *terraform_plan
+
+rippletest_terraform_apply:
+  dependencies:
+    - rippletest_build
+    - rippletest_terraform_plan
+  variables:
+    REDDIT_SUBREDDIT: "rippletest"
+  <<: *terraform_apply
