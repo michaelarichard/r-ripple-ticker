@@ -34,7 +34,7 @@ before_script:
     - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> terraform.tfvars
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - if [ ! -z "$SCHEDULE" ] ; then echo "SCHEDULE = \"${SCHEDULE}\"" >> terraform.tfvars; fi
-    - cat terraform.tfvars | aws '{ print $1}'
+    - cat terraform.tfvars | awk '{ print $1}'
     - terraform init
     - terraform plan -out tfplan
   artifacts:
