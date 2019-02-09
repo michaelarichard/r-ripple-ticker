@@ -35,6 +35,4 @@ before_script:
       - terraform/tfplan
 
 terraform_test_plan:
-  variables:
-    REDDIT_SUBREDDIT: 'rippletest'
   <<: *terraform_plan
