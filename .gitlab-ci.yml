@@ -3,6 +3,7 @@ image: michaelrichard/builder:v0.2
 
 variables:
   NODE_ENV: "test"
+  GIT_SSL_NO_VERIFY: "true"
 
 stages:
   - terraform_test_plan
