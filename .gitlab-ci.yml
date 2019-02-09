@@ -3,7 +3,6 @@ image: michaelrichard/builder:v0.2
 
 variables:
   NODE_ENV: "test"
-  REDDIT_SUBREDDIT: "rippletest"
 
 stages:
   - terraform_test_plan
@@ -21,7 +20,7 @@ before_script:
    - ./build.sh
 
 .terraform_plan: &terraform_plan
-  stage: terraform_plan
+  stage: terraform_test_plan
   script:
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> ./terraform/terraform.tfvars
     - cd terraform
@@ -35,4 +34,6 @@ before_script:
       - terraform/tfplan
 
 terraform_test_plan:
+  variables:
+    REDDIT_SUBREDDIT: "rippletest"
   <<: *terraform_plan
