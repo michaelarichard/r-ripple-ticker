@@ -34,6 +34,7 @@ before_script:
     - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> terraform.tfvars
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - if [ ! -z "$SCHEDULE" ] ; then echo "SCHEDULE = \"${SCHEDULE}\"" >> terraform.tfvars; fi
+    - cat terraform.tfvars | aws '{ print $1}'
     - terraform init
     - terraform plan -out tfplan
   artifacts:
@@ -60,7 +61,7 @@ rippletest_terraform_plan:
     - common_build
   variables:
     REDDIT_SUBREDDIT: "rippletest"
-    SCHEDULE_TIME: "10 minutes"
+    SCHEDULE: "10 minutes"
   <<: *terraform_plan
 
 rippletest_terraform_apply:
