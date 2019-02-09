@@ -35,3 +35,16 @@ resource "aws_lambda_function" "ticker_lambda" {
     }
   }
 }
+
+resource "aws_cloudwatch_event_rule" "ticker1min" {
+   name = "ticker1min"
+   depends_on = ["aws_lambda_function.ticker_lambda"]
+   schedule_expression = "rate(1 minute)"
+}
+
+resource "aws_cloudwatch_event_target" "ticker1min" {
+    target_id = "ticker1min"
+    rule = "${aws_cloudwatch_event_rule.ticker1min.name}"
+    arn = "${aws_lambda_function.ticker_lambda.arn}"
+}
+
