@@ -25,6 +25,7 @@ resource "aws_lambda_function" "ticker_lambda" {
   handler          = "lambda_function.lambda_handler"
   source_code_hash = "${base64sha256(file("lambda.py.zip"))}"
   runtime          = "python3.6"
+  timeout          = "30"
   environment {
     variables = {
       REDDIT_CLIENT_ID       = "${var.REDDIT_CLIENT_ID}"
