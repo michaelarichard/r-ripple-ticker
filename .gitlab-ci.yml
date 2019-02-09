@@ -10,15 +10,12 @@ stages:
   - terraform_plan
   - terraform_apply
   - terraform_destroy
+pre_script:
+   - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
 
 .build: &build
   stage: build
   script:
-   - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
-   - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
-   - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
-   - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
-   - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
    - cd lambda
    - ./build.sh
    - cd ..
@@ -27,6 +24,10 @@ stages:
   stage: terraform_plan
   script:
     - cd terraform
+    - echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> ./terraform/terraform.tfvars
+    - echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> ./terraform/terraform.tfvars
+    - echo "REDDIT_CLIENT_USERNAME = \"${REDDIT_CLIENT_USERNAME}\"" >> ./terraform/terraform.tfvars
+    - echo "REDDIT_CLIENT_PASSWORD = \"${REDDIT_CLIENT_PASSWORD}\"" >> ./terraform/terraform.tfvars
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - terraform init
     - terraform plan -out tfplan
