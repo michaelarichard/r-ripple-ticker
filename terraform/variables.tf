@@ -4,4 +4,3 @@ variable "REDDIT_CLIENT_USERNAME" {}
 variable "REDDIT_CLIENT_PASSWORD" {}
 variable "REDDIT_SUBREDDIT" {}
 variable "region" {}
-variable "function_name" {}
