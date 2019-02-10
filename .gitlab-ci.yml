@@ -95,3 +95,14 @@ ripple_terraform_apply:
   variables:
     REDDIT_SUBREDDIT: "ripple"
   <<: *terraform_apply
+
+ripple_terraform_apply_auto:
+  only:
+    - /^.*-release$/
+  dependencies:
+    - common_build
+    - ripple_terraform_plan
+  variables:
+    REDDIT_SUBREDDIT: "ripple"
+  <<: *terraform_apply
+
