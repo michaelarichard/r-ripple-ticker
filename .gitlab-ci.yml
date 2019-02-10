@@ -54,7 +54,7 @@ before_script:
   stage: terraform_apply
   script:
     - cd terraform
-    - terraform init
+    - terraform init -reconfigure -backend-config=${REDDIT_SUBREDDIT}.tfbackend
     - terraform apply -auto-approve tfplan
 
 common_build:
@@ -73,6 +73,8 @@ rippletest_terraform_apply:
   dependencies:
     - common_build
     - rippletest_terraform_plan
+  variables:
+    REDDIT_SUBREDDIT: "rippletest"
   <<: *terraform_apply
 
 ripple_terraform_plan:
@@ -90,4 +92,6 @@ ripple_terraform_apply:
   dependencies:
     - common_build
     - ripple_terraform_plan
+  variables:
+    REDDIT_SUBREDDIT: "ripple"
   <<: *terraform_apply
