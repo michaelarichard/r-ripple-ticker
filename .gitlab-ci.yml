@@ -11,7 +11,7 @@ stages:
   - terraform_apply
   - terraform_destroy
 before_script:
-   - terraform_url=$(curl https://releases.hashicorp.com/index.json 2>/dev/null| jq -r '{terraform}' | grep url| egrep "linux.*amd64" | sort -n -r | grep -v 'alpha\|beta' | head -n1 | awk '{print $2}' | xargs echo)
+   - terraform_url=$(curl https://releases.hashicorp.com/index.json 2>/dev/null| jq -r '{terraform}' | grep url| egrep "linux.*amd64" | grep '11.'| sort -n -r | grep -v 'alpha\|beta' | head -n1 | awk '{print $2}' | xargs echo)
    - curl -o terraform.zip $terraform_url
    - unzip -o terraform.zip -d "/usr/local/bin/"
    - terraform --version
