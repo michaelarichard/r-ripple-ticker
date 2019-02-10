@@ -62,6 +62,9 @@ common_build:
   <<: *build
 
 rippletest_terraform_plan:
+  except:
+    - master
+    - /^.*-release$/
   dependencies:
     - common_build
   variables:
@@ -70,6 +73,9 @@ rippletest_terraform_plan:
   <<: *terraform_plan
 
 rippletest_terraform_apply:
+  except:
+    - master
+    - /^.*-release$/
   dependencies:
     - common_build
     - rippletest_terraform_plan
@@ -89,6 +95,8 @@ ripple_terraform_apply:
   when: manual
   only:
     - master
+  except:
+    - /^.*-release$/
   dependencies:
     - common_build
     - ripple_terraform_plan
