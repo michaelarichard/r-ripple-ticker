@@ -12,7 +12,9 @@ stages:
   - terraform_destroy
 before_script:
    - terraform_url=$(curl https://releases.hashicorp.com/index.json 2>/dev/null| jq -r '{terraform}' | grep url| egrep "linux.*amd64" | sort -n -r | grep -v 'alpha\|beta' | head -n1 | awk '{print $2}' | xargs echo)
-   - curl -o terraform.zip $terraform_url && unzip terraform.zip && mv terraform /usr/local/bin/.
+   - curl -o terraform.zip $terraform_url
+   - unzip terraform.zip
+   - mv terraform /usr/local/bin/.
    - terraform --version
    - which terraform
    - echo -e "[default]\naws_access_key_id = ${AWS_ID}\naws_secret_access_key = ${AWS_KEY}" > ~/.aws/credentials
@@ -39,7 +41,7 @@ before_script:
     - echo "REDDIT_SUBREDDIT = \"${REDDIT_SUBREDDIT}\""  >> terraform.tfvars
     - if [ ! -z "$SCHEDULE" ] ; then echo "SCHEDULE = \"${SCHEDULE}\"" >> terraform.tfvars; fi
     - cat terraform.tfvars | awk '{ print $1}'
-    - terraform init
+    - terraform init -reconfigure -backend-config=${REDDIT_SUBREDDIT}.tfbackend
     - terraform plan -out tfplan
   artifacts:
     expire_in: 24h

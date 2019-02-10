@@ -1,0 +1,2 @@
+bucket = "stormpath-terraform-state"
+key = "rripple/ticker/us-west-2/rippletest/terraform.tfstate"
