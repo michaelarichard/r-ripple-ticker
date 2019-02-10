@@ -4,6 +4,7 @@ image: michaelrichard/builder:v0.2
 variables:
   NODE_ENV: "test"
   GIT_SSL_NO_VERIFY: "true"
+  terraform_url: https://releases.hashicorp.com/terraform/0.11.9/terraform_0.11.9_linux_amd64.zip
 
 stages:
   - build
@@ -11,7 +12,6 @@ stages:
   - terraform_apply
   - terraform_destroy
 before_script:
-   - terraform_url=$(curl https://releases.hashicorp.com/index.json 2>/dev/null| jq -r '{terraform}' | grep url| egrep "linux.*amd64" | grep '11.'| sort -n -r | grep -v 'alpha\|beta' | head -n1 | awk '{print $2}' | xargs echo)
    - curl -o terraform.zip $terraform_url
    - unzip -o terraform.zip -d "/usr/local/bin/"
    - terraform --version
