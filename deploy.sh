@@ -2,6 +2,12 @@
 
 source ~/projects/my_env
 
+# build
+cd lambda
+./build.sh
+cd ..
+
+# deploy
 cd terraform
 echo "REDDIT_CLIENT_ID = \"${REDDIT_CLIENT_ID}\"" >> terraform.tfvars
 echo "REDDIT_CLIENT_SECRET = \"${REDDIT_CLIENT_SECRET}\"" >> terraform.tfvars
@@ -12,5 +18,7 @@ if [ ! -z "$SCHEDULE" ] ; then echo "SCHEDULE = \"${SCHEDULE}\"" >> terraform.tf
 cat terraform.tfvars | awk '{ print $1}'
 terraform init -reconfigure -backend-config=${REDDIT_SUBREDDIT}.tfbackend
 terraform plan -out tfplan
+terraform apply tfplan
 
-git checkout terraform/terraform.tfvars
+# reset vars
+git checkout terraform.tfvars

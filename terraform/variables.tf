@@ -3,5 +3,5 @@ variable "REDDIT_CLIENT_SECRET" {}
 variable "REDDIT_CLIENT_USERNAME" {}
 variable "REDDIT_CLIENT_PASSWORD" {}
 variable "REDDIT_SUBREDDIT" {}
-variable "SCHEDULE" { default = "1 minute"}
+variable "SCHEDULE" { default = "10 minutes"}
 variable "region" {}
