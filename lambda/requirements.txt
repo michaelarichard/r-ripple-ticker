@@ -1,0 +1,3 @@
+praw==7.0.0
+requests==2.23.0
+pycoingecko=1.2.0

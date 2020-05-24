@@ -1,20 +1,16 @@
+#!/bin/env python
 import locale
 import praw
 import re
 import requests
 import os
+import json
 from datetime import datetime
+from pycoingecko import CoinGeckoAPI
+
+cg = CoinGeckoAPI()
 
 def lambda_handler(event, context):
-
-    # Settings
-    #xrp_btc_url = 'http://www.cryptocoincharts.info/v2/api/tradingPair/xrp_btc'
-    #xrp_usd_url = 'http://www.cryptocoincharts.info/v2/api/tradingPair/xrp_usd'
-    #xrp_eur_url = 'http://www.cryptocoincharts.info/v2/api/tradingPair/xrp_eur'
-    #btc_usd_url = 'http://www.cryptocoincharts.info/v2/api/tradingPair/btc_usd'
-
-    ticker_url = 'https://api.coinmarketcap.com/v1/ticker/'
-    ticker_url_eur = 'https://api.coinmarketcap.com/v1/ticker/?convert=EUR'
 
     subreddit_name = os.environ.get('REDDIT_SUBREDDIT')
     dryrun = False
@@ -27,7 +23,7 @@ def lambda_handler(event, context):
         client_id = os.environ.get('REDDIT_CLIENT_ID'),
         client_secret = os.environ.get('REDDIT_CLIENT_SECRET'),
         password = os.environ.get('REDDIT_CLIENT_PASSWORD'),
-        user_agent = 'rripple-bot-1.0',
+        user_agent = 'rripple-bot-1.1',
         username = os.environ.get('REDDIT_CLIENT_USERNAME')
     )
 
@@ -37,35 +33,38 @@ def lambda_handler(event, context):
 
         # Get legacy sidebar (description) from subreddit
         sidebar = subreddit.mod.settings()['description']
+        
         # Get ticker data
-        usd_ticker_data = requests.get(ticker_url).json()
-        eur_ticker_data = requests.get(ticker_url_eur).json()
+        usd_ticker_data = cg.get_price(ids='bitcoin,litecoin,ethereum,ripple', vs_currencies='usd',  include_market_cap='true', include_24hr_vol='true', include_24hr_change='true', include_last_updated_at='true')
+        btc_ticker_data = cg.get_price(ids='bitcoin,litecoin,ethereum,ripple', vs_currencies='btc',  include_market_cap='true', include_24hr_vol='true', include_24hr_change='true', include_last_updated_at='true')
+        eur_ticker_data = cg.get_price(ids='bitcoin,litecoin,ethereum,ripple', vs_currencies='eur',  include_market_cap='true', include_24hr_vol='true', include_24hr_change='true', include_last_updated_at='true')
+#        print(json.dumps(usd_ticker_data))
+#        print(json.dumps(eur_ticker_data))
+#        print(json.dumps(btc_ticker_data))
 
-        coins_usd = {}
-        coins_eur = {}
-        for coin in usd_ticker_data:
-            coins_usd[coin['symbol']] = coin
-        for coin in eur_ticker_data:
-            coins_eur[coin['symbol']] = coin
+#       usd_ticker_data = requests.get(ticker_url).json()
+#       eur_ticker_data = requests.get(ticker_url_eur).json()
+
             
         # XRP BTC
-        xrp_btc_price = coins_usd['XRP']['price_btc']
-        xrp_btc_change_pct = coins_usd['XRP']['percent_change_24h']
+#        xrp_btc_price = coins_usd['XRP']['price_btc']
+        xrp_btc_price = "{0:.8f}".format(btc_ticker_data['ripple']['btc'])
+        xrp_btc_change_pct = "{0:.2f}".format(btc_ticker_data['ripple']['btc_24h_change'])
         xrp_btc_change_icon = up_symbol if float(xrp_btc_change_pct) > 0 else dn_symbol
 
         # XRP EUR
-        xrp_eur_price = "{0:.3f}".format(float(coins_eur['XRP']['price_eur']))
-        xrp_eur_change_pct = coins_eur['XRP']['percent_change_24h']
+        xrp_eur_price = "{0:.3f}".format(float(eur_ticker_data['ripple']['eur']))
+        xrp_eur_change_pct = "{0:.2f}".format(eur_ticker_data['ripple']['eur_24h_change'])
         xrp_eur_change_icon = up_symbol if float(xrp_eur_change_pct) > 0 else dn_symbol
 
         # XRP USD
-        xrp_usd_price = "{0:.3f}".format(float(coins_usd['XRP']['price_usd']))
-        xrp_usd_change_pct = coins_usd['XRP']['percent_change_24h']        
+        xrp_usd_price = "{0:.3f}".format(float(usd_ticker_data['ripple']['usd']))
+        xrp_usd_change_pct = "{0:.2f}".format(usd_ticker_data['ripple']['usd_24h_change'])
         xrp_usd_change_icon = up_symbol if float(xrp_usd_change_pct) > 0 else dn_symbol
 
         # BTC USD
-        btc_usd_price = "{0:.2f}".format(float(coins_usd['BTC']['price_usd']))
-        btc_usd_change_pct = coins_usd['BTC']['percent_change_24h']
+        btc_usd_price = "{0:.2f}".format(float(usd_ticker_data['bitcoin']['usd']))
+        btc_usd_change_pct = "{0:.2f}".format(usd_ticker_data['bitcoin']['usd_24h_change'])
         btc_usd_change_icon = up_symbol if float(btc_usd_change_pct) > 0 else dn_symbol
 
 
